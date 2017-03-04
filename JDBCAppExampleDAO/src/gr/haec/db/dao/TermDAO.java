@@ -15,12 +15,18 @@ public class TermDAO extends BaseDAO<Term> {
 	private PreparedStatement selectByIdStatement;
 	private PreparedStatement selectAllStatement;
 	private PreparedStatement countStatement;
+	private static PreparedStatement addStatement;
+	private static PreparedStatement updateStatement;
+	private static PreparedStatement deleteStatement;
 
 	public TermDAO(Connection conn) throws SQLException {
 		super(conn);
-		selectByIdStatement = dbConnection.prepareStatement("SELECT term_id, name FROM wp_terms WHERE term_id = ?;");
-		selectAllStatement = dbConnection.prepareStatement("SELECT term_id, name FROM wp_terms;");
+		selectByIdStatement = dbConnection.prepareStatement("SELECT term_id, name, slug, is_deleted FROM wp_terms WHERE term_id = ?;");
+		selectAllStatement = dbConnection.prepareStatement("SELECT term_id, name, slug, is_deleted FROM wp_terms;");
 		countStatement = dbConnection.prepareStatement("SELECT count(*) FROM wp_terms;");
+		addStatement = dbConnection.prepareStatement("INSERT INTO wp_terms (name, slug) VALUES ('Course', 'course');");
+		updateStatement = dbConnection.prepareStatement("UPDATE wp_terms SET name = 'Course_name', slug = 'course_name' WHERE name = 'Course';");
+		deleteStatement = dbConnection.prepareStatement("UPDATE wp_terms SET is_deleted = 1 WHERE name = 'Course_name';");
 	}
 
 	@Override
@@ -29,11 +35,13 @@ public class TermDAO extends BaseDAO<Term> {
 
 		try {
 			selectByIdStatement.setInt(1, term_id);
-			selectByIdStatement.execute();
+			selectByIdStatement.executeQuery();
 			ResultSet resultSet = selectByIdStatement.getResultSet();
 			if (resultSet.first()) {
 				term.setTermId(resultSet.getInt("term_id"));
-				term.settermName(resultSet.getString("name"));
+				term.setTermName(resultSet.getString("name"));
+				term.setTermSlug(resultSet.getString("slug"));
+				term.setIsDeleted(resultSet.getInt("is_deleted"));
 			}
 			resultSet.close();
 		} catch (SQLException e) {
@@ -56,7 +64,9 @@ public class TermDAO extends BaseDAO<Term> {
 			while (resultSet.next()) {
 				Term term = new Term();
 				term.setTermId(resultSet.getInt("term_id"));
-				term.settermName(resultSet.getString("name"));
+				term.setTermName(resultSet.getString("name"));
+				term.setTermSlug(resultSet.getString("slug"));
+				term.setIsDeleted(resultSet.getInt("is_deleted"));
 				objectList.add(term);
 			}
 
@@ -86,6 +96,50 @@ public class TermDAO extends BaseDAO<Term> {
 		}
 		return count;
 	}
+	
+	public static Term add() {
+    	Term term = new Term();
+    	
+    	try {
+    		addStatement.executeQuery();
+    		term.setTermName(term.getTermName());
+    		term.setTermSlug(term.getTermSlug());
+    		} catch (SQLException e) {
+    			System.out.println("Caught SQLException while inserting data to table wp_terms");
+    			e.printStackTrace();
+    			return null;
+    		}
+    	return term;
+	}
+	
+	public static Term update() {
+		Term term = new Term();
+				
+		try {
+			updateStatement.executeQuery();
+			term.setTermName(term.getTermName());
+			term.setTermSlug(term.getTermSlug());
+		} catch (SQLException e) {
+			System.out.println("Caught SQLException while updating data to table wp_terms");
+			e.printStackTrace();
+			return null;
+	    }
+		return term;
+	}
+	
+	public static Term delete() {
+		Term term = new Term();
+				
+		try {
+			deleteStatement.executeQuery();
+			term.setIsDeleted(term.getIsDeleted());
+		} catch (SQLException e) {
+			System.out.println("Caught SQLException while deleting data to table wp_terms");
+			e.printStackTrace();
+			return null;
+	    }
+		return term;
+	}
 
 	@Override
 	public void close() {
@@ -93,6 +147,10 @@ public class TermDAO extends BaseDAO<Term> {
 			this.selectAllStatement.close();
 			this.selectByIdStatement.close();
 			this.countStatement.close();
+			TermDAO.addStatement.close();
+			TermDAO.updateStatement.close();
+			TermDAO.deleteStatement.close();
+			TermDAO.deleteStatement.close();
 		} catch (SQLException e) {
 			System.out.println("Could not close the DAO statements");
 			e.printStackTrace();

@@ -18,7 +18,7 @@ public class TagDAO extends BaseDAO<Tag> {
 
 	public TagDAO(Connection conn) throws SQLException {
 		super(conn);
-		selectByIdStatement = dbConnection.prepareStatement("SELECT wp_terms.term_id, wp_terms.name, wp_term_taxonomy.taxonomy, wp_term_taxonomy.description FROM wp_terms, wp_term_taxonomy WHERE wp_terms.term_id = ? ");
+		selectByIdStatement = dbConnection.prepareStatement("SELECT wp_terms.term_id, wp_terms.name, wp_term_taxonomy.taxonomy, wp_term_taxonomy.description FROM wp_terms, wp_term_taxonomy WHERE wp_terms.term_id = wp_term_taxonomy.term_id AND wp_terms.term_id = ?");
 		selectAllStatement = dbConnection.prepareStatement("SELECT wp_terms.term_id, wp_terms.name, wp_term_taxonomy.taxonomy, wp_term_taxonomy.description FROM wp_terms, wp_term_taxonomy WHERE taxonomy = 'post_tag' AND wp_terms.term_id = wp_term_taxonomy.term_id;");
 		countStatement = dbConnection.prepareStatement("SELECT count(*) FROM wp_term_taxonomy WHERE taxonomy = 'post_tag';");
 	}
@@ -29,7 +29,7 @@ public class TagDAO extends BaseDAO<Tag> {
 
 		try {
 			selectByIdStatement.setInt(1, term_id);
-			selectByIdStatement.execute();
+			selectByIdStatement.executeQuery();
 			ResultSet resultSet = selectByIdStatement.getResultSet();
 			if (resultSet.first()) {
 				tag.setId(resultSet.getInt("term_id"));

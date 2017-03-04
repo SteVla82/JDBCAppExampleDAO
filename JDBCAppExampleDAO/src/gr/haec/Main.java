@@ -5,13 +5,13 @@ import java.util.List;
 
 import gr.haec.db.DAOFactory;
 import gr.haec.db.dao.Dao;
+import gr.haec.db.dao.TermDAO;
 import gr.haec.library.Library;
 import gr.haec.model.Category;
 import gr.haec.model.Post;
 import gr.haec.model.Tag;
 import gr.haec.model.Term;
 import gr.haec.model.User;
-import gr.haec.db.dao.CategoryDAO;
 
 public class Main {
 
@@ -34,10 +34,16 @@ public class Main {
 			e.printStackTrace();
 			return;
 		}
-		
+		//CRUD Test
 		System.out.println("Inserting data to wp_terms");
 		System.out.println("");
-		CategoryDAO.add();
+		TermDAO.add();
+		System.out.println("Updating data from wp_terms");
+		System.out.println("");
+		TermDAO.update();
+		System.out.println("Deleting data from wp_terms");
+		System.out.println("");
+		TermDAO.delete();
 		
 
 		int postsCount = postDao.countAll();

@@ -8,6 +8,8 @@ public class Term {
 	// Attributes
 	private int term_id;
 	private String termName;
+	private String termSlug;
+	private int isDeleted;
 
 	// Constructor
 	public Term() {
@@ -24,16 +26,32 @@ public class Term {
 		this.term_id = id;
 	}
 
-	public String gettermName() {
+	public String getTermName() {
 		return termName;
 	}
 
-	public void settermName(String termName) {
+	public void setTermName(String termName) {
 		this.termName = termName;
+	}
+	
+	public String getTermSlug() {
+		return termSlug;
+	}
+
+	public void setTermSlug(String termSlug) {
+		this.termSlug = termSlug;
+	}
+
+	public int getIsDeleted() {
+		return isDeleted;
+	}
+
+	public void setIsDeleted(int isDeleted) {
+		this.isDeleted = isDeleted;
 	}
 
 	@Override
 	public String toString() {
-		return "Term [ id =  " + term_id + ", Term Name = " + termName + " ]";
+		return "Term [ id =  " + term_id + ", Term Name = " + termName + ", Term Slug = " + termSlug + " , is deleted =  " + isDeleted + " ]";
 	}
 }
