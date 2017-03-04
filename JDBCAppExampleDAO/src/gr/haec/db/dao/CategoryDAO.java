@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gr.haec.db.BaseDAO;
+//import gr.haec.db.dao.CRUDinterface;
 import gr.haec.model.Category;
 
 public class CategoryDAO extends BaseDAO<Category> implements Dao<Category> {
@@ -15,12 +16,14 @@ public class CategoryDAO extends BaseDAO<Category> implements Dao<Category> {
 	private PreparedStatement selectByIdStatement;
 	private PreparedStatement selectAllStatement;
 	private PreparedStatement countStatement;
+	private static PreparedStatement addStatement;
 
 	public CategoryDAO(Connection conn) throws SQLException {
 		super(conn);
 		selectByIdStatement = dbConnection.prepareStatement("SELECT wp_terms.term_id, wp_terms.name, wp_term_taxonomy.taxonomy, wp_term_taxonomy.description FROM wp_terms, wp_term_taxonomy WHERE wp_terms.term_id = ? ;");
 		selectAllStatement = dbConnection.prepareStatement("SELECT wp_terms.term_id, wp_terms.name, wp_term_taxonomy.taxonomy, wp_term_taxonomy.description FROM wp_terms, wp_term_taxonomy WHERE taxonomy = 'category' AND wp_terms.term_id = wp_term_taxonomy.term_id;");
 		countStatement = dbConnection.prepareStatement("SELECT count(*) FROM wp_term_taxonomy WHERE taxonomy = 'category';");
+		addStatement = dbConnection.prepareStatement("INSERT INTO wp_terms (name) VALUES ('Course');");
 	}
 
 	@Override
@@ -90,6 +93,31 @@ public class CategoryDAO extends BaseDAO<Category> implements Dao<Category> {
 		}
 		return count;
 	}
+	
+	    public static Category add() {
+	    	Category category = new Category();
+	    	
+	    	try {
+	    		addStatement.executeQuery();
+	    		category.setName(category.getName());
+	    		addStatement.close();
+	    		} catch (SQLException e) {
+	    			System.out.println("Caught SQLException while inserting data to table wp_terms");
+	    			e.printStackTrace();
+	    			return null;
+	    		}
+	    	return category;
+		}
+
+		public Category update(Category category) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+	
+		public Category delete(Category category) {
+			// TODO Auto-generated method stub
+			return null;
+		    }
 
 	@Override
 	public void close() {
@@ -97,6 +125,7 @@ public class CategoryDAO extends BaseDAO<Category> implements Dao<Category> {
 			this.selectAllStatement.close();
 			this.selectByIdStatement.close();
 			this.countStatement.close();
+			//this.addStatement.close();
 		} catch (SQLException e) {
 			System.out.println("Could not close the DAO statements");
 			e.printStackTrace();

@@ -11,6 +11,7 @@ import gr.haec.model.Post;
 import gr.haec.model.Tag;
 import gr.haec.model.Term;
 import gr.haec.model.User;
+import gr.haec.db.dao.CategoryDAO;
 
 public class Main {
 
@@ -33,6 +34,11 @@ public class Main {
 			e.printStackTrace();
 			return;
 		}
+		
+		System.out.println("Inserting data to wp_terms");
+		System.out.println("");
+		CategoryDAO.add();
+		
 
 		int postsCount = postDao.countAll();
 		System.out.println("WP Database contains: " + postsCount + " posts");
