@@ -15,54 +15,21 @@ import gr.haec.model.User;
 
 public class Main {
 
-	public static void main(String[] args) {
+	public static void printPosts() {
 		Dao<Post> postDao = null;
-		Dao<User> userDao = null;
-		Dao<Term> termDao = null;
-		Dao<Category> categoryDao = null;
-		Dao<Tag> tagDao = null;
 
 		try {
 			postDao = DAOFactory.getInstance().getPostDao();
-			userDao = DAOFactory.getInstance().getUserDao();
-			termDao = DAOFactory.getInstance().getTermDao();
-			categoryDao = DAOFactory.getInstance().getCategoryDao();
-			tagDao = DAOFactory.getInstance().getTagDao();
-		} 
-		catch (SQLException e) {
+		} catch (SQLException e) {
 			System.out.println("Could not connect to the database");
 			e.printStackTrace();
 			return;
 		}
-		//CRUD Test
-		System.out.println("Inserting data to wp_terms");
-		System.out.println("");
-		TermDAO.add();
-		System.out.println("Updating data from wp_terms");
-		System.out.println("");
-		TermDAO.update();
-		System.out.println("Deleting data from wp_terms");
-		System.out.println("");
-		TermDAO.delete();
-		
 
 		int postsCount = postDao.countAll();
 		System.out.println("WP Database contains: " + postsCount + " posts");
 		System.out.println("");
-		int usersCount = userDao.countAll();
-		System.out.println("WP Database contains: " + usersCount + " users");
-		System.out.println("");
-		int termsCount = termDao.countAll();
-		System.out.println("WP Database contains: " + termsCount + " terms");
-		System.out.println("");
-		int categoriesCount = categoryDao.countAll();
-		System.out.println("WP Database contains : " + categoriesCount + " categories");
-		System.out.println("");
-		int tagsCount = tagDao.countAll();
-		System.out.println("WP Database contains: " + tagsCount + " tags");
-		System.out.println("");
-		
-		
+
 		System.out.println("Acquiring all wordpress posts");
 		System.out.println("-----------------------------");
 		List<Post> allPosts = postDao.getAll();
@@ -76,6 +43,41 @@ public class Main {
 		} else {
 			System.out.println("Could not retrieve wp posts");
 		}
+
+		System.out.println("Retrieving post by id");
+		System.out.println("---------------------");
+		Post postById = postDao.get(38);
+
+		if (postById != null) {
+			System.out.println(postById);
+			System.out.println("");
+		}
+
+		// User chooses id
+		System.out.println("Retrieving post by id. Choose an id : ");
+		System.out.println("--------------------------------------");
+		int postid = Library.readInt();
+		Post postByIdpost = postDao.get(postid);
+
+		if (postByIdpost != null) {
+			System.out.println(postByIdpost);
+			System.out.println("");
+		}
+	}
+
+	public static void printUsers() {
+		Dao<User> userDao = null;
+		try {
+			userDao = DAOFactory.getInstance().getUserDao();
+		} catch (SQLException e) {
+			System.out.println("Could not connect to the database");
+			e.printStackTrace();
+			return;
+		}
+
+		int usersCount = userDao.countAll();
+		System.out.println("WP Database contains: " + usersCount + " users");
+		System.out.println("");
 
 		System.out.println("Acquiring all wordpress users");
 		System.out.println("-----------------------------");
@@ -91,6 +93,42 @@ public class Main {
 			System.out.println("Could not retrieve wp users");
 		}
 
+		System.out.println("Retrieving user by id");
+		System.out.println("---------------------");
+		User userById = userDao.get(1);
+
+		if (userById != null) {
+			System.out.println(userById);
+			System.out.println("");
+
+		}
+		// User chooses id
+		System.out.println("Retrieving user by id. Choose an id : ");
+		System.out.println("--------------------------------------");
+		int userid = Library.readInt();
+		User userByIduser = userDao.get(userid);
+
+		if (userByIduser != null) {
+			System.out.println(userByIduser);
+			System.out.println("");
+		}
+	}
+
+	public static void printTerms() {
+		Dao<Term> termDao = null;
+
+		try {
+			termDao = DAOFactory.getInstance().getTermDao();
+		} catch (SQLException e) {
+			System.out.println("Could not connect to the database");
+			e.printStackTrace();
+			return;
+		}
+
+		int termsCount = termDao.countAll();
+		System.out.println("WP Database contains: " + termsCount + " terms");
+		System.out.println("");
+
 		System.out.println("Acquiring all wordpress terms");
 		System.out.println("-----------------------------");
 		List<Term> allTerms = termDao.getAll();
@@ -104,9 +142,58 @@ public class Main {
 		} else {
 			System.out.println("Could not retrieve wp terms");
 		}
-		
-		System.out.println("Acquiring all wordpress categories with description");
-		System.out.println("---------------------------------------------------");
+
+		System.out.println("Retrieving term by id");
+		System.out.println("---------------------");
+		Term termById = termDao.get(6);
+
+		if (termById != null) {
+			System.out.println(termById);
+			System.out.println("");
+
+		}
+		// User chooses id
+		System.out.println("Retrieving term by id. Choose an id : ");
+		System.out.println("--------------------------------------");
+		int termid = Library.readInt();
+		Term termByIduser = termDao.get(termid);
+
+		if (termByIduser != null) {
+			System.out.println(termByIduser);
+			System.out.println("");
+		}
+
+		// CRUD Test
+		Term term = new Term();
+		System.out.println("Inserting data to wp_terms");
+		System.out.println("");
+		TermDAO.add(term);
+		System.out.println("Updating data from wp_terms");
+		System.out.println("");
+		TermDAO.update(term);
+		System.out.println("Deleting data from wp_terms");
+		System.out.println("");
+		TermDAO.delete(term);
+	}
+
+	public static void printCategories() {
+
+		Dao<Category> categoryDao = null;
+
+		try {
+			categoryDao = DAOFactory.getInstance().getCategoryDao();
+		} catch (SQLException e) {
+			System.out.println("Could not connect to the database");
+			e.printStackTrace();
+			return;
+		}
+
+		int categoryCount = categoryDao.countAll();
+		System.out.println("WP Database contains: " + categoryCount + " categories");
+		System.out.println("");
+
+		System.out.println("Acquiring all wordpress categories");
+		System.out.println("----------------------------------");
 		List<Category> allCategories = categoryDao.getAll();
 
 		if (allCategories != null) {
@@ -118,127 +205,93 @@ public class Main {
 		} else {
 			System.out.println("Could not retrieve wp categories");
 		}
-		
-		System.out.println("Acquiring all wordpress tags with description");
-		System.out.println("---------------------------------------------");
+
+		System.out.println("Retrieving category by id");
+		System.out.println("-------------------------");
+		Category categoryById = categoryDao.get(4);
+
+		if (categoryById != null) {
+			System.out.println(categoryById);
+			System.out.println("");
+
+		}
+		// User chooses id
+		System.out.println("Retrieving category by id. Choose an id : ");
+		System.out.println("------------------------------------------");
+		int categoryId = Library.readInt();
+		Category categoryByIduser = categoryDao.get(categoryId);
+
+		if (categoryByIduser != null) {
+			System.out.println(categoryByIduser);
+			System.out.println("");
+		}
+	}
+
+	public static void printTags() {
+		Dao<Tag> tagDao = null;
+
+		try {
+			tagDao = DAOFactory.getInstance().getTagDao();
+		} catch (SQLException e) {
+			System.out.println("Could not connect to the database");
+			e.printStackTrace();
+			return;
+		}
+
+		int tagCount = tagDao.countAll();
+		System.out.println("WP Database contains: " + tagCount + " tags");
+		System.out.println("");
+
+		System.out.println("Acquiring all wordpress tags");
+		System.out.println("----------------------------");
 		List<Tag> allTags = tagDao.getAll();
 
 		if (allTags != null) {
 			for (int i = 0; i < allTags.size(); i++) {
-				Tag currentTag = allTags.get(i);
-				System.out.println(currentTag);
+				Tag currentTags = allTags.get(i);
+				System.out.println(currentTags);
 				System.out.println("");
 			}
 		} else {
-			System.out.println("Could not retrieve wp tags");
+			System.out.println("Could not retrieve wp Tags");
 		}
 
-		System.out.println("Retrieving post by id");
-		System.out.println("---------------------");
-		Post postById = postDao.get(38);
+		System.out.println("Retrieving tag by id");
+		System.out.println("--------------------");
+		Tag tagById = tagDao.get(8);
 
-		if (postById != null) {
-			System.out.println(postById);
+		if (tagById != null) {
+			System.out.println(tagById);
 			System.out.println("");
 
-			// User chooses id
-			System.out.println("Retrieving post by id. Choose an id : ");
-			System.out.println("--------------------------------------");
-			int postid = Library.readInt();
-			Post postByIdpost = postDao.get(postid);
-
-				if (postByIdpost != null) {
-					System.out.println(postByIdpost);
-					System.out.println("");
-				} 
-			
-			System.out.println("Retrieving user by id");
-			System.out.println("---------------------");
-			User userById = userDao.get(1);
-
-			if (userById != null) {
-				System.out.println(userById);
-				System.out.println("");
-
-			}
-			// User chooses id
-			System.out.println("Retrieving user by id. Choose an id : ");
-			System.out.println("--------------------------------------");
-			int userid = Library.readInt();
-			User userByIduser = userDao.get(userid);
-
-			if (userByIduser != null) {
-				System.out.println(userByIduser);
-				System.out.println("");
-			}
-
-			System.out.println("Retrieving term by id");
-			System.out.println("---------------------");
-			Term termById = termDao.get(6);
-
-			if (termById != null) {
-				System.out.println(termById);
-				System.out.println("");
-
-			}
-			// User chooses id
-			System.out.println("Retrieving term by id. Choose an id : ");
-			System.out.println("--------------------------------------");
-			int termid = Library.readInt();
-			Term termByIduser = termDao.get(termid);
-
-			if (termByIduser != null) {
-				System.out.println(termByIduser);
-				System.out.println("");
-			}
-			
-			System.out.println("Retrieving category by id");
-			System.out.println("-------------------------");
-			Category categoryById = categoryDao.get(4);
-
-			if (categoryById != null) {
-				System.out.println(categoryById);
-				System.out.println("");
-
-			}
-			// User chooses id
-			System.out.println("Retrieving category by id. Choose an id : ");
-			System.out.println("------------------------------------------");
-			int categoryId = Library.readInt();
-			Category categoryByIduser = categoryDao.get(categoryId);
-
-			if (categoryByIduser != null) {
-				System.out.println(categoryByIduser);
-				System.out.println("");
-			}
-			
-			System.out.println("Retrieving tag by id");
-			System.out.println("--------------------");
-			Tag tagById = tagDao.get(8);
-
-			if (tagById != null) {
-				System.out.println(tagById);
-				System.out.println("");
-
-			}
-			// User chooses id
-			System.out.println("Retrieving tag by id. Choose an id : ");
-			System.out.println("-------------------------------------");
-			int tagid = Library.readInt();
-			Tag tagByIduser = tagDao.get(tagid);
-
-			if (tagByIduser != null) {
-				System.out.println(tagByIduser);
-				System.out.println("");
-			}
-
-			try {
-				DAOFactory.getInstance().close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				System.out.println("Could not close the DAO Factory instance");
-				e.printStackTrace();
-			}
 		}
+		// User chooses id
+		System.out.println("Retrieving tag by id. Choose an id : ");
+		System.out.println("-------------------------------------");
+		int tagid = Library.readInt();
+		Tag tagByIduser = tagDao.get(tagid);
+
+		if (tagByIduser != null) {
+			System.out.println(tagByIduser);
+			System.out.println("");
+		}
+	}
+
+	public static void main(String[] args) {
+
+		printPosts();
+		printUsers();
+		printTerms();
+		printCategories();
+		printTags();
+
+		try {
+			DAOFactory.getInstance().close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Could not close the DAO Factory instance");
+			e.printStackTrace();
+		}
+
 	}
 }

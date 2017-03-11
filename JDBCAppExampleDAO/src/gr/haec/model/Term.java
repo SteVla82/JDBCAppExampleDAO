@@ -6,8 +6,8 @@ public class Term {
 	public static final int INVALID_ID = -1;
 
 	// Attributes
-	private int term_id;
-	private String termName;
+	protected int term_id;
+	protected String termName;
 	private String termSlug;
 	private int isDeleted;
 

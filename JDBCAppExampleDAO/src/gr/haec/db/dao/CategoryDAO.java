@@ -32,8 +32,8 @@ public class CategoryDAO extends BaseDAO<Category> implements Dao<Category> {
 			selectByIdStatement.executeQuery();
 			ResultSet resultSet = selectByIdStatement.getResultSet();
 			if (resultSet.first()) {
-				category.setId(resultSet.getInt("term_id"));
-				category.setName(resultSet.getString("name"));
+				category.setTermId(resultSet.getInt("term_id"));
+				category.setTermName(resultSet.getString("name"));
 				category.setTaxonomy(resultSet.getString("taxonomy"));
 				category.setDescription(resultSet.getString("description"));
 			}
@@ -57,8 +57,8 @@ public class CategoryDAO extends BaseDAO<Category> implements Dao<Category> {
 
 			while (resultSet.next()) {
 				Category category = new Category();
-				category.setId(resultSet.getInt("term_id"));
-				category.setName(resultSet.getString("name"));
+				category.setTermId(resultSet.getInt("term_id"));
+				category.setTermName(resultSet.getString("name"));
 				category.setTaxonomy(resultSet.getString("taxonomy"));
 				category.setDescription(resultSet.getString("description"));
 				objectList.add(category);

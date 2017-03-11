@@ -32,8 +32,8 @@ public class TagDAO extends BaseDAO<Tag> {
 			selectByIdStatement.executeQuery();
 			ResultSet resultSet = selectByIdStatement.getResultSet();
 			if (resultSet.first()) {
-				tag.setId(resultSet.getInt("term_id"));
-				tag.setName(resultSet.getString("name"));
+				tag.setTermId(resultSet.getInt("term_id"));
+				tag.setTermName(resultSet.getString("name"));
 				tag.setTaxonomy(resultSet.getString("taxonomy"));
 				tag.setDescription(resultSet.getString("description"));
 			}
@@ -57,8 +57,8 @@ public class TagDAO extends BaseDAO<Tag> {
 
 			while (resultSet.next()) {
 				Tag tag = new Tag();
-				tag.setId(resultSet.getInt("term_id"));
-				tag.setName(resultSet.getString("name"));
+				tag.setTermId(resultSet.getInt("term_id"));
+				tag.setTermName(resultSet.getString("name"));
 				tag.setTaxonomy(resultSet.getString("taxonomy"));
 				tag.setDescription(resultSet.getString("description"));
 				objectList.add(tag);

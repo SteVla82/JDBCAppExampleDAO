@@ -9,6 +9,7 @@ import java.util.List;
 
 import gr.haec.db.BaseDAO;
 import gr.haec.model.Term;
+import gr.haec.library.Library;
 
 public class TermDAO extends BaseDAO<Term> {
 
@@ -21,12 +22,15 @@ public class TermDAO extends BaseDAO<Term> {
 
 	public TermDAO(Connection conn) throws SQLException {
 		super(conn);
-		selectByIdStatement = dbConnection.prepareStatement("SELECT term_id, name, slug, is_deleted FROM wp_terms WHERE term_id = ?;");
+		selectByIdStatement = dbConnection
+				.prepareStatement("SELECT term_id, name, slug, is_deleted FROM wp_terms WHERE term_id = ?;");
 		selectAllStatement = dbConnection.prepareStatement("SELECT term_id, name, slug, is_deleted FROM wp_terms;");
 		countStatement = dbConnection.prepareStatement("SELECT count(*) FROM wp_terms;");
-		addStatement = dbConnection.prepareStatement("INSERT INTO wp_terms (name, slug) VALUES ('Course', 'course');");
-		updateStatement = dbConnection.prepareStatement("UPDATE wp_terms SET name = 'Course_name', slug = 'course_name' WHERE name = 'Course';");
-		deleteStatement = dbConnection.prepareStatement("UPDATE wp_terms SET is_deleted = 1 WHERE name = 'Course_name';");
+		addStatement = dbConnection
+				.prepareStatement("INSERT INTO wp_terms (term_id, name, slug, is_deleted) VALUES (null, ? , ?, ?);");
+		updateStatement = dbConnection.prepareStatement(
+				"UPDATE wp_terms SET name = ?, slug = ?, is_deleted = ? WHERE term_id = ? AND name = ?;");
+		deleteStatement = dbConnection.prepareStatement("UPDATE wp_terms SET is_deleted = 1 WHERE name = ?;");
 	}
 
 	@Override
@@ -96,48 +100,78 @@ public class TermDAO extends BaseDAO<Term> {
 		}
 		return count;
 	}
-	
-	public static Term add() {
-    	Term term = new Term();
-    	
-    	try {
-    		addStatement.executeQuery();
-    		term.setTermName(term.getTermName());
-    		term.setTermSlug(term.getTermSlug());
-    		} catch (SQLException e) {
-    			System.out.println("Caught SQLException while inserting data to table wp_terms");
-    			e.printStackTrace();
-    			return null;
-    		}
-    	return term;
-	}
-	
-	public static Term update() {
-		Term term = new Term();
-				
+
+	public static Term add(Term term) {
+
 		try {
-			updateStatement.executeQuery();
-			term.setTermName(term.getTermName());
-			term.setTermSlug(term.getTermSlug());
+			System.out.println("Do you want to add a new term? Type yes or no");
+			if (Library.readString().equals("yes")) {
+				System.out.println("Insert new Term name");
+				addStatement.setString(1, Library.readString());
+				System.out.println("Insert new Term slug");
+				addStatement.setString(2, Library.readString());
+				System.out.println("Do you want this term deleted? Type 0 for no or 1 for yes");
+				addStatement.setInt(3, Library.readInt());
+				addStatement.executeUpdate();
+				addStatement.close();
+			} else {
+				System.out.println("You didn't insert new data");
+				System.out.println("");
+			}
+		} catch (SQLException e) {
+			System.out.println("Caught SQLException while inserting data to table wp_terms");
+			e.printStackTrace();
+			return null;
+		}
+		return term;
+	}
+
+	public static Term update(Term term) {
+
+		try {
+			System.out.println("Do you want to update a term? Type yes or no");
+			if (Library.readString().equals("yes")) {
+				System.out.println("Update Term name");
+				updateStatement.setString(1, Library.readString());
+				System.out.println("Update Term slug");
+				updateStatement.setString(2, Library.readString());
+				System.out.println("Do you want this term deleted? Type 0 for no or 1 for yes");
+				updateStatement.setInt(3, Library.readInt());
+				System.out.println("Which id does this term have that you want to update?");
+				updateStatement.setString(4, Library.readString());
+				System.out.println("What name does this term have that you want to update?");
+				updateStatement.setString(5, Library.readString());
+				updateStatement.executeUpdate();
+			} else {
+				System.out.println("You didn't update any data");
+				System.out.println("");
+			}
+
 		} catch (SQLException e) {
 			System.out.println("Caught SQLException while updating data to table wp_terms");
 			e.printStackTrace();
 			return null;
-	    }
+		}
 		return term;
 	}
-	
-	public static Term delete() {
-		Term term = new Term();
-				
+
+	public static Term delete(Term term) {
+
 		try {
-			deleteStatement.executeQuery();
-			term.setIsDeleted(term.getIsDeleted());
+			System.out.println("Do you want to delete a term? Type yes or no");
+			if (Library.readString().equals("yes")) {
+				System.out.println("Which Term do you want to delete?");
+				deleteStatement.setString(1, Library.readString());
+				deleteStatement.executeUpdate();
+			} else {
+				System.out.println("You didn't delete any data");
+				System.out.println("");
+			}
 		} catch (SQLException e) {
 			System.out.println("Caught SQLException while deleting data to table wp_terms");
 			e.printStackTrace();
 			return null;
-	    }
+		}
 		return term;
 	}
 
@@ -149,7 +183,6 @@ public class TermDAO extends BaseDAO<Term> {
 			this.countStatement.close();
 			TermDAO.addStatement.close();
 			TermDAO.updateStatement.close();
-			TermDAO.deleteStatement.close();
 			TermDAO.deleteStatement.close();
 		} catch (SQLException e) {
 			System.out.println("Could not close the DAO statements");
